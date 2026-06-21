@@ -1,0 +1,2401 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SnackExpress | Livraison de snacks & pâtisseries à domicile</title>
+  <meta name="description" content="SnackExpress : commandez vos snacks et pâtisseries préférés en ligne. Livraison rapide et service premium de nuit.">
+  
+  <!-- Google Fonts - Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* VARIABLES & THEME SYSTEM */
+    :root {
+      --bg-main: #0a0a0c;
+      --bg-surface: #121217;
+      --bg-surface-hover: #1b1b22;
+      --bg-input: #17171e;
+      --color-primary: #ff4757;
+      --color-primary-rgb: 255, 71, 87;
+      --color-accent: #ffa502;
+      --color-success: #2ed573;
+      --color-text: #f1f2f6;
+      --color-text-muted: #a4b0be;
+      --color-border: rgba(255, 255, 255, 0.08);
+      --gradient-accent: linear-gradient(135deg, #ff4757, #ff6b81);
+      --gradient-gold: linear-gradient(135deg, #ff9f43, #ffa502);
+      --gradient-dark: linear-gradient(180deg, #121217 0%, #0a0a0c 100%);
+      --glow-shadow: 0 8px 32px 0 rgba(255, 71, 87, 0.2);
+      --border-radius: 16px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --font-outfit: 'Outfit', sans-serif;
+    }
+
+    /* GLOBAL RESET & STYLES */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-outfit);
+      background-color: var(--bg-main);
+      color: var(--color-text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      color: inherit;
+    }
+
+    /* PREMIUM SCROLLBAR */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-main);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #23232c;
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--color-primary);
+    }
+
+    /* HEADER / NAVIGATION (GLASSMORPHISM) */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(18, 18, 23, 0.8);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-bottom: var(--color-border) 1px solid;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: var(--transition);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .logo-icon {
+      font-size: 28px;
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    .logo-text {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-badge {
+      font-size: 10px;
+      background: var(--gradient-gold);
+      color: #000;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      margin-left: 2px;
+    }
+
+    nav {
+      display: flex;
+      gap: 5px;
+    }
+
+    nav a {
+      color: var(--color-text-muted);
+      font-weight: 500;
+      font-size: 15px;
+      padding: 10px 18px;
+      border-radius: 25px;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    nav a:hover, nav a.active {
+      color: var(--color-text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    nav a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      box-shadow: 0 0 10px var(--color-primary);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    /* CART TRIGGER BUTTON */
+    .cart-trigger {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--color-border);
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cart-trigger::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+      transition: 0.5s;
+    }
+
+    .cart-trigger:hover::before {
+      left: 100%;
+    }
+
+    .cart-trigger:hover {
+      background: rgba(255, 71, 87, 0.1);
+      border-color: rgba(255, 71, 87, 0.3);
+      color: var(--color-primary);
+      transform: translateY(-2px);
+    }
+
+    .cart-icon {
+      font-size: 18px;
+    }
+
+    .cart-count-badge {
+      background: var(--gradient-accent);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--glow-shadow);
+      animation: pop 0.3s ease-out;
+    }
+
+    /* MAIN CONTAINER & SPA VIEWS */
+    main {
+      flex: 1;
+      max-width: 1300px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 40px 20px;
+      position: relative;
+    }
+
+    .spa-view {
+      display: none;
+      animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .spa-view.active-view {
+      display: block;
+    }
+
+    /* HERO SECTION */
+    .hero {
+      background: linear-gradient(135deg, rgba(255, 71, 87, 0.1) 0%, rgba(18, 18, 23, 0) 60%), var(--bg-surface);
+      border-radius: 24px;
+      padding: 60px 40px;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      margin-bottom: 50px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .hero-content {
+      max-width: 650px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255, 71, 87, 0.15);
+      color: var(--color-primary);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 71, 87, 0.25);
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+    }
+
+    .hero h1 span {
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: var(--color-text-muted);
+      margin-bottom: 30px;
+    }
+
+    .hero-btn {
+      background: var(--gradient-accent);
+      color: white;
+      border: none;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 16px 36px;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: var(--glow-shadow);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hero-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px 0 rgba(255, 71, 87, 0.35);
+    }
+
+    .hero-image-decor {
+      font-size: 120px;
+      user-select: none;
+      filter: drop-shadow(0 15px 30px rgba(0,0,0,0.5));
+      animation: float 6s infinite ease-in-out;
+      display: block;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        flex-direction: column;
+        padding: 40px 25px;
+        text-align: center;
+      }
+      .hero-image-decor {
+        display: none;
+      }
+      .hero h1 {
+        font-size: 36px;
+      }
+    }
+
+    /* MENU SECTION */
+    .menu-title-container {
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .section-title {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 4px;
+      background: var(--color-primary);
+      border-radius: 2px;
+      margin-top: 8px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 25px;
+    }
+
+    /* CARD DESIGN */
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      padding: 24px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top right, rgba(255, 71, 87, 0.05), transparent 60%);
+      opacity: 0;
+      transition: var(--transition);
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255, 71, 87, 0.2);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 1px 1px rgba(255, 71, 87, 0.1) inset;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-top {
+      text-align: center;
+      padding: 10px 0 20px 0;
+      position: relative;
+    }
+
+    .card-emoji {
+      font-size: 64px;
+      display: inline-block;
+      margin-bottom: 10px;
+      transition: var(--transition);
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3));
+    }
+
+    .card:hover .card-emoji {
+      transform: scale(1.15) rotate(5deg);
+    }
+
+    .card-info {
+      text-align: left;
+    }
+
+    .card-info h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      letter-spacing: -0.2px;
+    }
+
+    .card-description {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin-bottom: 15px;
+      min-height: 40px;
+    }
+
+    .card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      padding-top: 15px;
+    }
+
+    .card-price {
+      font-size: 22px;
+      font-weight: 800;
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .add-to-cart-btn {
+      background: var(--gradient-accent);
+      color: white;
+      border: none;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(255, 71, 87, 0.2);
+    }
+
+    .add-to-cart-btn:hover {
+      box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
+      transform: scale(1.05);
+    }
+
+    /* DOUBLE COLUMN LAYOUT FOR CHECKOUT */
+    .checkout-container {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    @media (max-width: 1000px) {
+      .checkout-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* CHOSE PANEL STYLING */
+    .premium-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper input, .input-wrapper select, .input-wrapper textarea {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--color-border);
+      padding: 14px 16px;
+      border-radius: 12px;
+      color: white;
+      font-size: 15px;
+      transition: var(--transition);
+    }
+
+    .input-wrapper input:focus, .input-wrapper select:focus, .input-wrapper textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.15);
+      background: var(--bg-surface-hover);
+    }
+
+    .input-wrapper textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .checkout-btn {
+      width: 100%;
+      background: var(--gradient-accent);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--glow-shadow);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .checkout-btn:hover {
+      box-shadow: 0 10px 30px rgba(255, 71, 87, 0.35);
+      transform: translateY(-2px);
+    }
+
+    /* SUMMARY PANEL */
+    .summary-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding-bottom: 12px;
+    }
+
+    .summary-items {
+      max-height: 250px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      padding-right: 5px;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .summary-item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .summary-item-emoji {
+      font-size: 22px;
+    }
+
+    .summary-item-name {
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .summary-item-qty {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      background: rgba(255,255,255,0.05);
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .summary-item-price {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .summary-totals {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 14px;
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: var(--color-text-muted);
+    }
+
+    .summary-row.total {
+      margin-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: 12px;
+      font-size: 20px;
+      font-weight: 800;
+      color: white;
+    }
+
+    .summary-row.total .total-price {
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* EMPTY CART PLACEHOLDERS */
+    .empty-cart-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--color-text-muted);
+    }
+
+    .empty-cart-icon {
+      font-size: 60px;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+
+    /* GORGEOUS TICKET/RECEIPT */
+    .receipt-wrapper {
+      max-width: 500px;
+      margin: 40px auto;
+      perspective: 1000px;
+    }
+
+    .receipt-card {
+      background: #fafafa;
+      color: #111116;
+      border-radius: 12px;
+      padding: 35px 25px 25px 25px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+      position: relative;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      border-top: 10px solid var(--color-primary);
+      animation: receiptShow 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+    }
+
+    /* Zigzag edge bottom */
+    .receipt-card::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(-45deg, transparent 8px, #fafafa 0), linear-gradient(45deg, transparent 8px, #fafafa 0);
+      background-size: 16px 16px;
+      background-repeat: repeat-x;
+    }
+
+    .receipt-header {
+      text-align: center;
+      border-bottom: 2px dashed #bbb;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+
+    .receipt-title {
+      font-family: var(--font-outfit);
+      font-weight: 800;
+      font-size: 24px;
+      letter-spacing: -0.5px;
+      color: #000;
+    }
+
+    .receipt-subtitle {
+      font-size: 11px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    .receipt-info {
+      margin-bottom: 20px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .receipt-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-bottom: 2px dashed #bbb;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+    }
+
+    .receipt-table th {
+      text-align: left;
+      font-weight: bold;
+      border-bottom: 1px solid #ddd;
+      padding: 6px 0;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .receipt-table td {
+      padding: 8px 0;
+      font-size: 13px;
+    }
+
+    .receipt-table .text-right {
+      text-align: right;
+    }
+
+    .receipt-total-section {
+      border-bottom: 2px dashed #bbb;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    .receipt-grand-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 18px;
+      font-weight: 800;
+      color: #000;
+    }
+
+    .receipt-delivery-details {
+      background: rgba(0,0,0,0.03);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .receipt-delivery-details h4 {
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: #000;
+      font-family: var(--font-outfit);
+      font-size: 13px;
+    }
+
+    .receipt-barcode {
+      text-align: center;
+      margin: 25px 0 10px 0;
+    }
+
+    .receipt-barcode-visual {
+      height: 40px;
+      background: repeating-linear-gradient(90deg, #111, #111 2px, transparent 2px, transparent 6px);
+      width: 70%;
+      margin: 0 auto 5px auto;
+    }
+
+    .receipt-barcode-text {
+      font-size: 10px;
+      color: #555;
+    }
+
+    .receipt-footer {
+      text-align: center;
+      font-size: 11px;
+      color: #777;
+      margin-top: 15px;
+    }
+
+    .receipt-action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+      justify-content: center;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--color-border);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: var(--transition);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.12);
+    }
+
+    /* NETWORKS VIEW */
+    .networks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-top: 20px;
+    }
+
+    .network-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .network-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .network-card.snapchat:hover {
+      border-color: #fffc00;
+      background: linear-gradient(135deg, rgba(255, 252, 0, 0.05), var(--bg-surface));
+    }
+
+    .network-card.instagram:hover {
+      border-color: #e1306c;
+      background: linear-gradient(135deg, rgba(225, 48, 108, 0.05), var(--bg-surface));
+    }
+
+    .network-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+
+    .network-name {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .network-handle {
+      font-size: 15px;
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+
+    .network-desc {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin-top: 10px;
+    }
+
+    /* JOIN-US & CONTACT VIEWS */
+    .info-header {
+      max-width: 700px;
+      margin-bottom: 40px;
+    }
+
+    .info-header h2 {
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+
+    .info-header p {
+      font-size: 16px;
+      color: var(--color-text-muted);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .contact-details {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .contact-detail-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .contact-detail-icon {
+      font-size: 32px;
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--color-border);
+    }
+
+    .contact-detail-info h4 {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-text-muted);
+      margin-bottom: 4px;
+    }
+
+    .contact-detail-info p {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    /* CART DRAWER SLIDE-OVER */
+    .cart-drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      z-index: 200;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+    }
+
+    .cart-drawer-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: -450px;
+      width: 100%;
+      max-width: 450px;
+      height: 100vh;
+      background: var(--bg-surface);
+      border-left: 1px solid var(--color-border);
+      z-index: 201;
+      box-shadow: -10px 0 40px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .cart-drawer-overlay.open .cart-drawer {
+      transform: translateX(-450px);
+    }
+
+    @media (max-width: 450px) {
+      .cart-drawer-overlay.open .cart-drawer {
+        transform: translateX(-100%);
+      }
+      .cart-drawer {
+        right: -100%;
+        max-width: 100%;
+      }
+    }
+
+    .cart-drawer-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-drawer-header h3 {
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .close-cart-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--color-border);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: var(--transition);
+    }
+
+    .close-cart-btn:hover {
+      background: rgba(255,255,255,0.1);
+      transform: scale(1.05);
+    }
+
+    .cart-drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 15px;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      align-items: center;
+    }
+
+    .cart-item-emoji {
+      font-size: 36px;
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cart-item-info {
+      flex: 1;
+    }
+
+    .cart-item-info h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .cart-item-info p {
+      font-size: 13px;
+      color: var(--color-text-muted);
+    }
+
+    .cart-item-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .qty-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--color-border);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      transition: var(--transition);
+    }
+
+    .qty-btn:hover {
+      background: rgba(255,255,255,0.15);
+      color: white;
+    }
+
+    .qty-val {
+      font-size: 15px;
+      font-weight: 700;
+      width: 20px;
+      text-align: center;
+    }
+
+    .remove-item-btn {
+      background: transparent;
+      border: none;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 5px;
+      transition: var(--transition);
+    }
+
+    .remove-item-btn:hover {
+      color: var(--color-primary);
+      transform: scale(1.1);
+    }
+
+    .cart-drawer-footer {
+      padding: 24px;
+      border-top: 1px solid var(--color-border);
+      background: rgba(18, 18, 23, 0.5);
+    }
+
+    .cart-drawer-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .cart-drawer-total-label {
+      font-size: 15px;
+      color: var(--color-text-muted);
+    }
+
+    .cart-drawer-total-price {
+      font-size: 24px;
+      font-weight: 800;
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .cart-checkout-btn {
+      width: 100%;
+      background: var(--gradient-accent);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 30px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--glow-shadow);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .cart-checkout-btn:hover {
+      box-shadow: 0 10px 25px rgba(255, 71, 87, 0.35);
+      transform: translateY(-2px);
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--color-border);
+      background: var(--bg-surface);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--color-text-muted);
+      margin-top: 60px;
+    }
+
+    footer p {
+      margin-bottom: 10px;
+    }
+
+    .footer-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--color-border);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+
+    /* FLOATING ACTIONS (MOBILE QUICK CART) */
+    .mobile-cart-float {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: var(--gradient-accent);
+      color: white;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--glow-shadow);
+      cursor: pointer;
+      z-index: 99;
+      transition: var(--transition);
+      border: none;
+    }
+
+    .mobile-cart-float:hover {
+      transform: scale(1.1) rotate(-5deg);
+    }
+
+    .mobile-cart-badge {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: var(--color-accent);
+      color: #000;
+      font-size: 11px;
+      font-weight: 700;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    @media (max-width: 768px) {
+      .mobile-cart-float {
+        display: flex;
+      }
+      .header-cart-container {
+        display: none;
+      }
+    }
+
+    /* CUSTOM ALERTS */
+    .alert {
+      padding: 12px 18px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      display: none;
+      animation: pop 0.3s ease-out;
+    }
+
+    .alert-error {
+      background: rgba(255, 71, 87, 0.15);
+      border: 1px solid rgba(255, 71, 87, 0.3);
+      color: #ff6b81;
+    }
+
+    /* ANIMATIONS DEFINITIONS */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.8); opacity: 0; }
+      70% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(3deg); }
+    }
+
+    @keyframes receiptShow {
+      from { opacity: 0; transform: scale(0.9) rotateY(10deg); }
+      to { opacity: 1; transform: scale(1) rotateY(0); }
+    }
+
+    /* MOBILE & NEW FEATURE IMPROVEMENTS */
+    @media (max-width: 768px) {
+      .checkout-container {
+        gap: 20px;
+      }
+      .premium-panel {
+        padding: 20px 15px;
+        border-radius: 18px;
+      }
+    }
+
+    /* COLLAPSIBLE SUMMARY FOR MOBILE */
+    .summary-toggle-header {
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      padding: 5px 0 15px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: 10px;
+    }
+
+    .summary-toggle-title {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .summary-toggle-total {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--color-accent);
+    }
+
+    .toggle-arrow {
+      font-size: 12px;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    @media (max-width: 768px) {
+      .summary-toggle-header {
+        display: flex;
+      }
+      .summary-title {
+        display: none;
+      }
+      .summary-items {
+        display: none;
+        margin-top: 15px;
+      }
+      .summary-items.open {
+        display: block;
+      }
+      .summary-toggle-header.open .toggle-arrow {
+        transform: rotate(180deg);
+      }
+    }
+
+    /* CLEAR CART BUTTON */
+    .clear-cart-btn {
+      background: rgba(255, 71, 87, 0.1);
+      border: 1px solid rgba(255, 71, 87, 0.2);
+      color: var(--color-primary);
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: var(--transition);
+      margin-left: auto;
+      margin-right: 15px;
+    }
+
+    .clear-cart-btn:hover {
+      background: var(--color-primary);
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .clear-cart-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: rgba(255, 255, 255, 0.03);
+      border-color: var(--color-border);
+      color: var(--color-text-muted);
+    }
+
+    /* WHATSAPP CONFIRMATION BUTTON */
+    .whatsapp-btn {
+      margin-top: 15px;
+      margin-bottom: 5px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background-color: #25D366;
+      color: white;
+      padding: 14px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+      transition: var(--transition);
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+    }
+    .whatsapp-btn:hover {
+      background-color: #20ba5a;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-container" onclick="location.hash = 'accueil'">
+      <span class="logo-icon">🍔</span>
+      <span class="logo-text">SnackExpress</span>
+      <span class="logo-badge">Pro</span>
+    </div>
+    
+    <nav id="main-nav">
+      <a href="#accueil" class="nav-link active" id="nav-accueil">Accueil</a>
+      <a href="#commande" class="nav-link" id="nav-commande">Commander</a>
+      <a href="#reseaux" class="nav-link" id="nav-reseaux">Réseaux</a>
+      <a href="#rejoins" class="nav-link" id="nav-rejoins">Rejoins-nous</a>
+      <a href="#contact" class="nav-link" id="nav-contact">Contact</a>
+    </nav>
+
+    <div class="nav-actions">
+      <div class="header-cart-container">
+        <button class="cart-trigger" onclick="toggleCart(true)">
+          <span class="cart-icon">🛍️</span>
+          <span>Panier</span>
+          <span class="cart-count-badge" id="cart-count">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN SPA CONTENT -->
+  <main>
+    <!-- VIEW: HOME (ACCUEIL) -->
+    <section id="view-accueil" class="spa-view active-view">
+      <div class="hero">
+        <div class="hero-content">
+          <span class="hero-badge">🚚 Livraison Express 7j/7</span>
+          <h1>Snacks &amp; Pâtisseries<br>Livrés <span>chez vous en 30 min</span></h1>
+          <p>Satisfaites vos envies de fin de soirée avec notre sélection de douceurs salées et sucrées soigneusement préparées et livrées à votre porte.</p>
+          <button class="hero-btn" onclick="location.hash = 'commande'">
+            <span>Commander maintenant</span>
+            <span>👉</span>
+          </button>
+        </div>
+        <div class="hero-image-decor">🍩</div>
+      </div>
+
+      <div class="menu-title-container">
+        <h2 class="section-title">Notre Menu Premium</h2>
+      </div>
+
+      <div class="cards-grid" id="product-list">
+        <!-- Products will be generated by JS -->
+      </div>
+    </section>
+
+    <!-- VIEW: CHECKOUT (COMMANDE) -->
+    <section id="view-commande" class="spa-view">
+      <div class="info-header">
+        <h2>Passer votre Commande</h2>
+        <p>Remplissez les détails ci-dessous pour finaliser votre livraison. Vos produits resteront chauds et frais.</p>
+      </div>
+
+      <div class="checkout-container" id="checkout-form-container">
+        <!-- Form Left -->
+        <div class="premium-panel">
+          <div id="checkout-error" class="alert alert-error">Veuillez remplir tous les champs obligatoires (*)</div>
+          <div id="checkout-empty-warning" class="alert alert-error" style="display:none; align-items: center; gap: 10px;">
+            🛒 Votre panier est vide. <a href="#accueil" onclick="location.hash='accueil'" style="color: var(--color-primary); font-weight: 700; text-decoration: underline;">Retournez à l'accueil</a> pour ajouter des snacks.
+          </div>
+          
+          <form id="order-form" onsubmit="submitOrder(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="order-name">Nom complet *</label>
+                <div class="input-wrapper">
+                  <input type="text" id="order-name" required placeholder="Ex: Jean Dupont">
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="order-phone">Téléphone *</label>
+                <div class="input-wrapper">
+                  <input type="tel" id="order-phone" required placeholder="Ex: 06 12 34 56 78">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="order-address">Adresse de livraison *</label>
+              <div class="input-wrapper">
+                <input type="text" id="order-address" required placeholder="Ex: 42 Rue des Snacks, 75001 Paris">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="order-datetime">Heure de livraison souhaitée</label>
+                <div class="input-wrapper">
+                  <input type="datetime-local" id="order-datetime">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="order-payment">Mode de paiement *</label>
+                <div class="input-wrapper">
+                  <select id="order-payment">
+                    <option value="Espèces">Espèces à la livraison</option>
+                    <option value="Carte Bancaire">Carte bancaire à la livraison</option>
+                    <option value="Lydia">Lydia / PayLib</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="order-comment">Commentaire de livraison</label>
+              <div class="input-wrapper">
+                <textarea id="order-comment" placeholder="Code porte, instructions particulières, allergies..."></textarea>
+              </div>
+            </div>
+
+            <button type="submit" id="submit-order-btn" class="checkout-btn">
+              <span>🚀 Valider et Commander</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Cart summary right -->
+        <div class="premium-panel">
+          <h3 class="summary-title">Votre Panier</h3>
+
+          <!-- Mobile collapsible toggle header -->
+          <div class="summary-toggle-header" id="summary-toggle-header" onclick="toggleSummaryCollapse()">
+            <span class="summary-toggle-title">🛒 Votre Panier <span class="toggle-arrow">▼</span></span>
+            <span class="summary-toggle-total" id="summary-toggle-total">0,00 €</span>
+          </div>
+          
+          <div class="summary-items" id="summary-items-list">
+            <!-- Items generated by JS -->
+          </div>
+
+          <div class="summary-totals">
+            <div class="summary-row">
+              <span>Sous-total</span>
+              <span id="summary-subtotal">0,00 €</span>
+            </div>
+            <div class="summary-row">
+              <span>Livraison</span>
+              <span id="summary-delivery" style="color: var(--color-success); font-weight: 600;">GRATUIT</span>
+            </div>
+            <div class="summary-row total">
+              <span>Total</span>
+              <span class="total-price" id="summary-total">0,00 €</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUCCESS RECEIPT VIEW (Initially Hidden) -->
+      <div id="checkout-success-container" style="display: none;">
+        <div class="receipt-wrapper">
+          <div class="receipt-card" id="order-receipt">
+            <!-- Receipt content will be generated by JS -->
+          </div>
+          
+          <a href="#" id="whatsapp-order-btn" target="_blank" class="whatsapp-btn">
+            <span>💬 Envoyer la commande par WhatsApp</span>
+          </a>
+          
+          <div class="receipt-action-buttons">
+            <button class="btn-secondary" onclick="location.hash = 'accueil'">
+              🏠 Retour à l'accueil
+            </button>
+            <button class="btn-secondary" onclick="window.print()" style="background: var(--gradient-gold); color: #000; font-weight: 700; border: none;">
+              🖨️ Imprimer le ticket
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: NETWORKS (RESEAUX) -->
+    <section id="view-reseaux" class="spa-view">
+      <div class="info-header">
+        <h2>Rejoignez nos Réseaux</h2>
+        <p>Suivez-nous pour ne manquer aucune offre exclusive, de nouveaux snacks temporaires ou des concours de folie !</p>
+      </div>
+
+      <div class="networks-grid">
+        <div class="network-card snapchat" onclick="window.open('https://snapchat.com', '_blank')">
+          <div class="network-icon">👻</div>
+          <div class="network-name">Snapchat</div>
+          <div class="network-handle">@SnackExpress</div>
+          <div class="network-desc">Codes promos exclusifs chaque vendredi soir dans notre story.</div>
+        </div>
+
+        <div class="network-card instagram" onclick="window.open('https://instagram.com', '_blank')">
+          <div class="network-icon">📸</div>
+          <div class="network-name">Instagram</div>
+          <div class="network-handle">@SnackExpress</div>
+          <div class="network-desc">Partagez vos photos de tiramisus avec le hashtag #SnackExpress.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: JOIN US (REJOINS) -->
+    <section id="view-rejoins" class="spa-view">
+      <div class="info-grid">
+        <div class="info-header">
+          <h2>Devenez Livreur</h2>
+          <p>Rejoignez la flotte SnackExpress. Bénéficiez d'une flexibilité totale de planning et d'une rémunération attractive.</p>
+          
+          <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 15px;">
+            <div style="display: flex; gap: 15px; align-items: center;">
+              <span style="font-size: 24px;">💰</span>
+              <div>
+                <strong style="display: block;">Revenus attractifs</strong>
+                <span style="color: var(--color-text-muted); font-size: 14px;">Payé à la course + 100% des pourboires conservés.</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+              <span style="font-size: 24px;">📅</span>
+              <div>
+                <strong style="display: block;">Planning flexible</strong>
+                <span style="color: var(--color-text-muted); font-size: 14px;">Choisissez vos tranches horaires via notre application.</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+              <span style="font-size: 24px;">🚲</span>
+              <div>
+                <strong style="display: block;">Moyen de transport libre</strong>
+                <span style="color: var(--color-text-muted); font-size: 14px;">Vélo, trottinette électrique ou scooter.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="premium-panel">
+          <h3 class="summary-title" style="margin-bottom: 25px;">Postuler en 1 minute</h3>
+          <div id="apply-success" class="alert alert-error" style="background: rgba(46, 213, 115, 0.15); border-color: rgba(46, 213, 115, 0.3); color: var(--color-success); display: none;">Candidature envoyée avec succès ! Notre équipe vous contactera sous 24h.</div>
+          
+          <form onsubmit="submitApplication(event)">
+            <div class="form-group">
+              <label for="apply-name">Nom complet *</label>
+              <div class="input-wrapper">
+                <input type="text" id="apply-name" required placeholder="Jean Dupont">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="apply-phone">Numéro de téléphone *</label>
+              <div class="input-wrapper">
+                <input type="tel" id="apply-phone" required placeholder="06 00 00 00 00">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="apply-vehicle">Moyen de transport *</label>
+              <div class="input-wrapper">
+                <select id="apply-vehicle">
+                  <option>Vélo électrique / Trottinette</option>
+                  <option>Scooter / Moto</option>
+                  <option>Voiture</option>
+                  <option>Autre</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="apply-availability">Disponibilités habituelles</label>
+              <div class="input-wrapper">
+                <textarea id="apply-availability" placeholder="Ex: Vendredi et Samedi soir de 20h à 2h du matin."></textarea>
+              </div>
+            </div>
+
+            <button type="submit" class="checkout-btn" style="background: var(--gradient-gold); color: #000; font-weight: 800; box-shadow: 0 4px 15px rgba(255, 165, 2, 0.2);">
+              <span>Envoyer ma candidature</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: CONTACT -->
+    <section id="view-contact" class="spa-view">
+      <div class="info-header">
+        <h2>Centre de Support</h2>
+        <p>Un problème avec une commande ou une question ? Notre service client réactif est à votre écoute.</p>
+      </div>
+
+      <div class="info-grid">
+        <div class="contact-details">
+          <div class="contact-detail-card">
+            <div class="contact-detail-icon">✉️</div>
+            <div class="contact-detail-info">
+              <h4>Email de support</h4>
+              <p>contact@snackexpress.com</p>
+            </div>
+          </div>
+
+          <div class="contact-detail-card">
+            <div class="contact-detail-icon">📞</div>
+            <div class="contact-detail-info">
+              <h4>Téléphone gratuit</h4>
+              <p>06 00 00 00 00</p>
+            </div>
+          </div>
+
+          <div class="contact-detail-card">
+            <div class="contact-detail-icon">📍</div>
+            <div class="contact-detail-info">
+              <h4>Adresse du hub</h4>
+              <p>75001 Paris, France</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="premium-panel">
+          <h3 class="summary-title" style="margin-bottom: 25px;">Écrivez-nous un message</h3>
+          <div id="contact-success" class="alert alert-error" style="background: rgba(46, 213, 115, 0.15); border-color: rgba(46, 213, 115, 0.3); color: var(--color-success); display: none;">Message transmis ! Une réponse vous sera envoyée dans l'heure.</div>
+          
+          <form onsubmit="submitContact(event)">
+            <div class="form-group">
+              <label for="contact-name">Nom complet *</label>
+              <div class="input-wrapper">
+                <input type="text" id="contact-name" required placeholder="Jean Dupont">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="contact-email">Adresse Email *</label>
+              <div class="input-wrapper">
+                <input type="email" id="contact-email" required placeholder="jean.dupont@exemple.com">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="contact-msg">Votre message *</label>
+              <div class="input-wrapper">
+                <textarea id="contact-msg" required placeholder="Décrivez votre demande en quelques lignes..." style="min-height: 120px;"></textarea>
+              </div>
+            </div>
+
+            <button type="submit" class="checkout-btn">
+              <span>Envoyer le message</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- SHOPPING CART DRAWER (SIDE-OVER) -->
+  <div class="cart-drawer-overlay" id="cart-overlay" onclick="toggleCart(false)">
+    <div class="cart-drawer" onclick="event.stopPropagation()">
+      <div class="cart-drawer-header">
+        <h3>🛍️ Votre Panier</h3>
+        <button id="clear-cart-btn" class="clear-cart-btn" onclick="clearCart()" disabled>Vider 🗑️</button>
+        <button class="close-cart-btn" onclick="toggleCart(false)">✕</button>
+      </div>
+      
+      <div class="cart-drawer-body" id="cart-drawer-items">
+        <!-- Rendered dynamically by JS -->
+      </div>
+      
+      <div class="cart-drawer-footer">
+        <div class="cart-drawer-total">
+          <span class="cart-drawer-total-label">Total de la commande :</span>
+          <span class="cart-drawer-total-price" id="cart-total-price">0,00 €</span>
+        </div>
+        <button class="cart-checkout-btn" onclick="goToCheckout()">
+          <span>💳 Passer à la caisse</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING CART BUTTON FOR MOBILE -->
+  <button class="mobile-cart-float" onclick="toggleCart(true)">
+    <span>🛍️</span>
+    <span class="mobile-cart-badge" id="mobile-cart-count">0</span>
+  </button>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2026 SnackExpress Corporation. Tous droits réservés.</p>
+    <div class="footer-badge">Prototype SPA Premium - Bêta V2.0</div>
+  </footer>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // 1. DATA SOURCES & INITIAL PRODUCTS
+    const PRODUCTS = [
+      { id: 'coca', name: 'Coca-Cola', emoji: '🥤', price: 1.30, desc: 'Canette fraîche de 33cl, originale.' },
+      { id: 'chips', name: 'Chips Salées', emoji: '🍟', price: 1.50, desc: 'Chips croustillantes salées cuites au chaudron.' },
+      { id: 'tiramisu', name: 'Tiramisu Classique', emoji: '🍰', price: 3.00, desc: 'Tiramisu maison, café et cacao premium.' },
+      { id: 'churros', name: 'Churros Sucrés', emoji: '🥨', price: 2.50, desc: 'Churros chauds saupoudrés de sucre fin (x5).' },
+      { id: 'brownie', name: 'Brownie Chocolat', emoji: '🍫', price: 2.20, desc: 'Fondant au chocolat noir et éclats de noix.' },
+      { id: 'cookie', name: 'Cookie Pépites', emoji: '🍪', price: 1.80, desc: 'Cookie géant aux pépites de chocolat belge.' },
+      { id: 'gaufre', name: 'Gaufre de Liège', emoji: '🧇', price: 2.80, desc: 'Gaufre caramélisée, nappage chocolat chaud.' }
+    ];
+
+    // 2. STATE MANAGEMENT
+    let cart = [];
+
+    // Load cart from LocalStorage if present
+    function loadCart() {
+      const savedCart = localStorage.getItem('snackexpress_cart');
+      if (savedCart) {
+        try {
+          cart = JSON.parse(savedCart);
+        } catch (e) {
+          cart = [];
+        }
+      }
+      renderCart();
+    }
+
+    // Save cart to LocalStorage
+    function saveCart() {
+      localStorage.setItem('snackexpress_cart', JSON.stringify(cart));
+      renderCart();
+    }
+
+    // 3. CART OPERATIONS
+    function addToCart(productId) {
+      const product = PRODUCTS.find(p => p.id === productId);
+      if (!product) return;
+
+      const existingItem = cart.find(item => item.id === productId);
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push({
+          id: product.id,
+          name: product.name,
+          emoji: product.emoji,
+          price: product.price,
+          quantity: 1
+        });
+      }
+      
+      saveCart();
+      
+      // Animate cart badge
+      const badge = document.getElementById('cart-count');
+      badge.classList.remove('pop');
+      void badge.offsetWidth; // Trigger reflow
+      badge.classList.add('pop');
+
+      // Visual feedback on the button
+      showNotification(`Ajouté : ${product.name} !`);
+    }
+
+    function updateQuantity(productId, change) {
+      const item = cart.find(item => item.id === productId);
+      if (!item) return;
+
+      item.quantity += change;
+      if (item.quantity <= 0) {
+        cart = cart.filter(item => item.id !== productId);
+      }
+      saveCart();
+    }
+
+    function removeFromCart(productId) {
+      cart = cart.filter(item => item.id !== productId);
+      saveCart();
+    }
+
+    // Dynamic toast notification
+    function showNotification(text) {
+      // Clean previous notifications
+      const prev = document.querySelector('.toast-notif');
+      if (prev) prev.remove();
+
+      const notif = document.createElement('div');
+      notif.className = 'toast-notif';
+      notif.style.position = 'fixed';
+      notif.style.bottom = '30px';
+      notif.style.left = '30px';
+      notif.style.background = 'var(--gradient-accent)';
+      notif.style.color = 'white';
+      notif.style.padding = '12px 24px';
+      notif.style.borderRadius = '30px';
+      notif.style.fontWeight = '700';
+      notif.style.fontSize = '14px';
+      notif.style.boxShadow = 'var(--glow-shadow)';
+      notif.style.zIndex = '300';
+      notif.style.animation = 'pop 0.3s ease-out';
+      notif.innerText = text;
+      
+      document.body.appendChild(notif);
+
+      setTimeout(() => {
+        notif.style.animation = 'fadeIn 0.3s reverse forwards';
+        setTimeout(() => notif.remove(), 300);
+      }, 2500);
+    }
+
+    // 4. RENDERING METHODS
+    function renderProductGrid() {
+      const container = document.getElementById('product-list');
+      container.innerHTML = PRODUCTS.map(product => `
+        <div class="card">
+          <div class="card-top">
+            <span class="card-emoji">${product.emoji}</span>
+          </div>
+          <div class="card-info">
+            <h3>${product.name}</h3>
+            <p class="card-description">${product.desc}</p>
+          </div>
+          <div class="card-bottom">
+            <span class="card-price">${product.price.toFixed(2).replace('.', ',')} €</span>
+            <button class="add-to-cart-btn" onclick="addToCart('${product.id}')">
+              <span>Ajouter</span>
+              <span>➕</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderCart() {
+      // Update count badges
+      const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+      document.getElementById('cart-count').innerText = totalCount;
+      document.getElementById('mobile-cart-count').innerText = totalCount;
+
+      // Update clear cart button state
+      const clearBtn = document.getElementById('clear-cart-btn');
+      if (clearBtn) clearBtn.disabled = cart.length === 0;
+
+      // Update cart drawer body
+      const drawerBody = document.getElementById('cart-drawer-items');
+      const totalPriceElement = document.getElementById('cart-total-price');
+
+      if (cart.length === 0) {
+        drawerBody.innerHTML = `
+          <div class="empty-cart-state">
+            <div class="empty-cart-icon">🛒</div>
+            <p>Votre panier est vide pour le moment.</p>
+          </div>
+        `;
+        totalPriceElement.innerText = '0,00 €';
+      } else {
+        drawerBody.innerHTML = cart.map(item => `
+          <div class="cart-item">
+            <div class="cart-item-emoji">${item.emoji}</div>
+            <div class="cart-item-info">
+              <h4>${item.name}</h4>
+              <p>${item.price.toFixed(2).replace('.', ',')} €</p>
+            </div>
+            <div class="cart-item-controls">
+              <button class="qty-btn" onclick="updateQuantity('${item.id}', -1)">-</button>
+              <span class="qty-val">${item.quantity}</span>
+              <button class="qty-btn" onclick="updateQuantity('${item.id}', 1)">+</button>
+              <button class="remove-item-btn" onclick="removeFromCart('${item.id}')">🗑️</button>
+            </div>
+          </div>
+        `).join('');
+
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        totalPriceElement.innerText = `${total.toFixed(2).replace('.', ',')} €`;
+      }
+
+      // Update checkout views
+      renderCheckoutSummary();
+    }
+
+    function renderCheckoutSummary() {
+      const list = document.getElementById('summary-items-list');
+      const subtotalEl = document.getElementById('summary-subtotal');
+      const totalEl = document.getElementById('summary-total');
+      const submitBtn = document.getElementById('submit-order-btn');
+      const emptyWarning = document.getElementById('checkout-empty-warning');
+      const toggleTotal = document.getElementById('summary-toggle-total');
+
+      if (cart.length === 0) {
+        list.innerHTML = `
+          <div class="empty-cart-state" style="padding: 20px 0;">
+            <p>Aucun article</p>
+          </div>
+        `;
+        subtotalEl.innerText = '0,00 €';
+        totalEl.innerText = '0,00 €';
+        if (toggleTotal) toggleTotal.innerText = '0,00 €';
+
+        // Disable checkout button and show warning
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.style.opacity = '0.55';
+          submitBtn.style.cursor = 'not-allowed';
+          submitBtn.innerHTML = '<span>⚠️ Panier vide — Ajoutez des snacks !</span>';
+        }
+        if (emptyWarning) emptyWarning.style.display = 'flex';
+      } else {
+        list.innerHTML = cart.map(item => `
+          <div class="summary-item">
+            <div class="summary-item-left">
+              <span class="summary-item-emoji">${item.emoji}</span>
+              <span class="summary-item-name">${item.name}</span>
+              <span class="summary-item-qty">x${item.quantity}</span>
+            </div>
+            <span class="summary-item-price">${(item.price * item.quantity).toFixed(2).replace('.', ',')} €</span>
+          </div>
+        `).join('');
+
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const fmtTotal = `${total.toFixed(2).replace('.', ',')} €`;
+        subtotalEl.innerText = fmtTotal;
+        totalEl.innerText = fmtTotal;
+        if (toggleTotal) toggleTotal.innerText = fmtTotal;
+
+        // Enable checkout button, hide warning
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = '1';
+          submitBtn.style.cursor = 'pointer';
+          submitBtn.innerHTML = '<span>🚀 Valider et Commander</span>';
+        }
+        if (emptyWarning) emptyWarning.style.display = 'none';
+      }
+    }
+
+    // 5. DRAWER TOGGLE
+    function toggleCart(open) {
+      const overlay = document.getElementById('cart-overlay');
+      if (open) {
+        overlay.classList.add('open');
+      } else {
+        overlay.classList.remove('open');
+      }
+    }
+
+    function goToCheckout() {
+      toggleCart(false);
+      location.hash = 'commande';
+    }
+
+    // 5a. CLEAR CART
+    function clearCart() {
+      if (cart.length === 0) return;
+      if (!confirm('Vider tout le panier ? Cette action est irréversible.')) return;
+      cart = [];
+      localStorage.removeItem('snackexpress_cart');
+      renderCart();
+      showNotification('Panier vidé avec succès.');
+    }
+
+    // 5b. COLLAPSIBLE MOBILE SUMMARY
+    function toggleSummaryCollapse() {
+      const header = document.getElementById('summary-toggle-header');
+      const list = document.getElementById('summary-items-list');
+      if (!header || !list) return;
+      header.classList.toggle('open');
+      list.classList.toggle('open');
+    }
+
+    // 6. SPA ROUTER
+    const ROUTES = ['accueil', 'commande', 'reseaux', 'rejoins', 'contact'];
+
+    function router() {
+      let hash = location.hash.replace('#', '');
+      if (!ROUTES.includes(hash)) {
+        hash = 'accueil';
+        location.hash = 'accueil';
+      }
+
+      // Reset active route display
+      ROUTES.forEach(route => {
+        const view = document.getElementById(`view-${route}`);
+        const link = document.getElementById(`nav-${route}`);
+        
+        if (route === hash) {
+          view.classList.add('active-view');
+          link.classList.add('active');
+        } else {
+          view.classList.remove('active-view');
+          link.classList.remove('active');
+        }
+      });
+
+      // Scroll smoothly to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 7. EMAIL DELIVERY (FormSubmit.co — gratuit, sans backend)
+    const OWNER_EMAIL = 'LordainzAF4@gmail.com';
+
+    function sendEmail(subject, bodyLines) {
+      const body = bodyLines.join('\n');
+      fetch(`https://formsubmit.co/ajax/${OWNER_EMAIL}`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json', 
+          'Accept': 'application/json' 
+        },
+        body: JSON.stringify({
+          _subject: subject,
+          _captcha: "false",
+          message: body
+        })
+      }).catch(() => {/* silencieux en cas d'erreur réseau */});
+    }
+
+    // 7a. ORDER SUBMISSION & RECEIPT GENERATION
+    function submitOrder(e) {
+      e.preventDefault();
+      
+      const errorDiv = document.getElementById('checkout-error');
+      errorDiv.style.display = 'none';
+
+      if (cart.length === 0) {
+        errorDiv.innerText = "Votre panier est vide. Veuillez ajouter des articles avant de commander.";
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      // Snapshot the cart contents before clearing
+      const orderCart = [...cart];
+
+      const name = document.getElementById('order-name').value.trim();
+      const phone = document.getElementById('order-phone').value.trim();
+      const address = document.getElementById('order-address').value.trim();
+      const datetime = document.getElementById('order-datetime').value;
+      const payment = document.getElementById('order-payment').value;
+      const comment = document.getElementById('order-comment').value.trim();
+
+      if (!name || !phone || !address) {
+        errorDiv.innerText = "Veuillez remplir tous les champs obligatoires (*)";
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      // Calculations
+      const subtotal = orderCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const orderId = 'SE-' + Math.floor(100000 + Math.random() * 900000);
+      const orderDate = new Date();
+      const formattedDate = orderDate.toLocaleDateString('fr-FR') + ' à ' + orderDate.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
+
+      // Set default delivery time if empty
+      const targetTime = datetime ? new Date(datetime).toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'}) : 'Dès que possible (environ 30 min)';
+
+      // Generate Receipt HTML
+      const receiptEl = document.getElementById('order-receipt');
+      receiptEl.innerHTML = `
+        <div class="receipt-header">
+          <div class="receipt-title">🍔 SnackExpress</div>
+          <div class="receipt-subtitle">Ticket de Caisse</div>
+        </div>
+        
+        <div class="receipt-info">
+          <div class="receipt-row">
+            <span>N° de Commande:</span>
+            <strong>#${orderId}</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Date:</span>
+            <span>${formattedDate}</span>
+          </div>
+          <div class="receipt-row">
+            <span>Statut:</span>
+            <span style="font-weight: bold; text-transform: uppercase; color: #2ed573;">Payé (${payment})</span>
+          </div>
+        </div>
+
+        <table class="receipt-table">
+          <thead>
+            <tr>
+              <th>ARTICLE</th>
+              <th>QTY</th>
+              <th class="text-right">P.U.</th>
+              <th class="text-right">TOTAL</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${orderCart.map(item => `
+              <tr>
+                <td>${item.emoji} ${item.name}</td>
+                <td>${item.quantity}</td>
+                <td class="text-right">${item.price.toFixed(2).replace('.', ',')} €</td>
+                <td class="text-right">${(item.price * item.quantity).toFixed(2).replace('.', ',')} €</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+
+        <div class="receipt-total-section">
+          <div class="receipt-row">
+            <span>Sous-Total:</span>
+            <span>${subtotal.toFixed(2).replace('.', ',')} €</span>
+          </div>
+          <div class="receipt-row">
+            <span>Frais de livraison:</span>
+            <span style="color: #2ed573; font-weight: bold;">GRATUIT</span>
+          </div>
+          <div class="receipt-grand-total">
+            <span>TOTAL À PAYER:</span>
+            <span>${subtotal.toFixed(2).replace('.', ',')} €</span>
+          </div>
+        </div>
+
+        <div class="receipt-delivery-details">
+          <h4>DÉTAILS DE LIVRAISON</h4>
+          <p><strong>Client:</strong> ${name}</p>
+          <p><strong>Tél:</strong> ${phone}</p>
+          <p><strong>Adresse:</strong> ${address}</p>
+          <p><strong>Planification:</strong> ${targetTime}</p>
+          ${comment ? `<p><strong>Instructions:</strong> "${comment}"</p>` : ''}
+        </div>
+
+        <div class="receipt-barcode">
+          <div class="receipt-barcode-visual"></div>
+          <div class="receipt-barcode-text">*${orderId}*</div>
+        </div>
+
+        <div class="receipt-footer">
+          <p>Merci pour votre confiance !</p>
+          <p>Suivez votre livreur par SMS.</p>
+        </div>
+      `;
+
+      // Clear Cart state
+      cart = [];
+      localStorage.removeItem('snackexpress_cart');
+      renderCart();
+
+      // --- Envoi email commande ---
+      sendEmail(
+        `🚨 Commande N° ${orderId} — ${name} (${subtotal.toFixed(2).replace('.', ',')} €)`,
+        [
+          `📦 NOUVELLE COMMANDE`,
+          `━━━━━━━━━━━━━━━━━━━━`,
+          `N° Commande : #${orderId}`,
+          `Date        : ${formattedDate}`,
+          ``,
+          `CLIENT`,
+          `Nom        : ${name}`,
+          `Téléphone  : ${phone}`,
+          `Adresse    : ${address}`,
+          `Livraison  : ${targetTime}`,
+          `Paiement   : ${payment}`,
+          comment ? `Instructions : ${comment}` : '',
+          ``,
+          `ARTICLES`,
+          ...orderCart.map(i => `  - ${i.emoji} ${i.name} x${i.quantity}  →  ${(i.price * i.quantity).toFixed(2).replace('.', ',')} €`),
+          ``,
+          `TOTAL : ${subtotal.toFixed(2).replace('.', ',')} €`,
+          `Livraison : GRATUITE`,
+        ].filter(l => l !== null && l !== undefined)
+      );
+
+      // --- WhatsApp Redirection ---
+      const waText = encodeURIComponent(
+        `🍔 *NOUVELLE COMMANDE SnackExpress*\n` +
+        `━━━━━━━━━━━━━━━━━━━━\n` +
+        `*Commande :* #${orderId}\n` +
+        `*Date :* ${formattedDate}\n\n` +
+        `👤 *CLIENT*\n` +
+        `*Nom :* ${name}\n` +
+        `*Tél :* ${phone}\n` +
+        `*Adresse :* ${address}\n` +
+        `*Livraison :* ${targetTime}\n` +
+        `*Paiement :* ${payment}\n` +
+        (comment ? `*Instructions :* ${comment}\n` : '') +
+        `\n🛒 *ARTICLES*\n` +
+        orderCart.map(i => `• ${i.emoji} ${i.name} x${i.quantity} (${(i.price * i.quantity).toFixed(2).replace('.', ',')} €)`).join('\n') +
+        `\n\n*TOTAL à payer :* ${subtotal.toFixed(2).replace('.', ',')} €\n` +
+        `Livraison : GRATUITE`
+      );
+      
+      const waBtn = document.getElementById('whatsapp-order-btn');
+      if (waBtn) {
+        waBtn.href = `https://wa.me/33642316796?text=${waText}`;
+      }
+
+      // View transition with scroll to top
+      document.getElementById('checkout-form-container').style.display = 'none';
+      document.getElementById('checkout-success-container').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Forms handling for join and contact
+    function submitApplication(e) {
+      e.preventDefault();
+      const form = e.target;
+      const appName    = form.querySelector('[name="app-name"], #app-name, input[placeholder*="Nom"], input[type="text"]')?.value || '(non renseigné)';
+      const appEmail   = form.querySelector('[name="app-email"], #app-email, input[type="email"]')?.value || '(non renseigné)';
+      const appPhone   = form.querySelector('[name="app-phone"], #app-phone, input[type="tel"]')?.value || '(non renseigné)';
+      const appMessage = form.querySelector('[name="app-message"], #app-message, textarea')?.value || '(non renseigné)';
+
+      sendEmail(
+        `[SnackExpress] Candidature — ${appName}`,
+        [
+          `👤 NOUVELLE CANDIDATURE`,
+          `━━━━━━━━━━━━━━━━━━━━━━━`,
+          `Nom       : ${appName}`,
+          `Email     : ${appEmail}`,
+          `Téléphone : ${appPhone}`,
+          ``,
+          `Message / Motivation :`,
+          appMessage
+        ]
+      );
+
+      document.getElementById('apply-success').style.display = 'block';
+      form.reset();
+      setTimeout(() => {
+        document.getElementById('apply-success').style.display = 'none';
+      }, 5000);
+    }
+
+    function submitContact(e) {
+      e.preventDefault();
+      const form = e.target;
+      const cName    = form.querySelector('input[type="text"]')?.value || '(non renseigné)';
+      const cEmail   = form.querySelector('input[type="email"]')?.value || '(non renseigné)';
+      const cSubject = form.querySelector('input[placeholder*="Sujet"], input[placeholder*="sujet"], input[name*="subject"]')?.value || '(non renseigné)';
+      const cMessage = form.querySelector('textarea')?.value || '(non renseigné)';
+
+      sendEmail(
+        `[SnackExpress] Message de ${cName} — ${cSubject}`,
+        [
+          `✉️ NOUVEAU MESSAGE DE CONTACT`,
+          `━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+          `Nom     : ${cName}`,
+          `Email   : ${cEmail}`,
+          `Sujet   : ${cSubject}`,
+          ``,
+          `Message :`,
+          cMessage
+        ]
+      );
+
+      document.getElementById('contact-success').style.display = 'block';
+      form.reset();
+      setTimeout(() => {
+        document.getElementById('contact-success').style.display = 'none';
+      }, 5000);
+    }
+
+    // 8. EVENT LISTENERS
+    window.addEventListener('hashchange', router);
+    window.addEventListener('load', () => {
+      renderProductGrid();
+      loadCart();
+      router();
+      
+      // Auto-set minimum date to now for delivery datetime input
+      const tzoffset = (new Date()).getTimezoneOffset() * 60000;
+      const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 16);
+      const datetimeInput = document.getElementById('order-datetime');
+      if (datetimeInput) {
+        datetimeInput.min = localISOTime;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+/* _redirects – SPA route handling */
+/* Any path should serve index.html */
+/* Format: <source> <target> <status> */
+/* Example */
+/* /    /index.html    200 */
+/* Using Netlify/Render style */
+/* Works on GitHub Pages as fallback */
+/* All routes -> index.html */
+/* End */
+/* Note: GitHub Pages also uses 404.html fallback */
+/* Syntax for Render/Netlify: */
+/* /   /index.html   200 */
+/* In practice any line like below works */
+/*
+/*
+/*
+/*
+/*
